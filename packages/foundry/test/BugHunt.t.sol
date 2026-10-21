@@ -15,7 +15,7 @@ contract BugHuntTest is Test {
     address bob = makeAddr("bob");
 
     function setUp() public {
-        // Fake Chainlink, set up like on vrf.chain.link
+        // Fake Chainlink, set up som på vrf.chain.link
         vrf = new VRFCoordinatorV2_5Mock(0.1 ether, 1e9, 4e15);
         subId = vrf.createSubscription();
         vrf.fundSubscriptionWithNative{value: 100 ether}(subId);
@@ -30,7 +30,7 @@ contract BugHuntTest is Test {
         token.approve(address(game), 1000 ether);
     }
 
-    // alice hunts, then fake Chainlink answers with the number we choose
+    // alice huntar, sen fake Chainlink svarar med numret vi väljer
     function huntWithRoll(uint256 roll) internal {
         vm.prank(alice);
         uint256 requestId = game.hunt();
@@ -74,7 +74,7 @@ contract BugHuntTest is Test {
     }
 
     function test_RevertWhen_NoApproval() public {
-        token.transfer(bob, 100 ether); // bob has BUG but never approved
+        token.transfer(bob, 100 ether); // bob har BUG men aldrig approvad
         vm.prank(bob);
         vm.expectRevert();
         game.hunt();
@@ -91,7 +91,7 @@ contract BugHuntTest is Test {
     function test_RevertWhen_PoolTooLow() public {
         BugHunt small = new BugHunt(address(vrf), address(token), subId, bytes32(0));
         vrf.addConsumer(subId, address(small));
-        token.transfer(address(small), 500 ether); // pool smaller than one Critical
+        token.transfer(address(small), 500 ether); // pool mindre än en Critical
         vm.prank(alice);
         token.approve(address(small), 100 ether);
 
@@ -103,7 +103,7 @@ contract BugHuntTest is Test {
     function test_OwnerCanRefund() public {
         vm.prank(alice);
         uint256 requestId = game.hunt();
-        game.refund(requestId); // this test contract is the owner
+        game.refund(requestId); // detta test kontraktet är owner
         assertEq(token.balanceOf(alice), 1000 ether);
         assertFalse(game.isHunting(alice));
     }
@@ -116,7 +116,7 @@ contract BugHuntTest is Test {
         game.refund(requestId);
     }
 
-    // Foundry runs this 256 times with random rolls
+    // Foundry kör detta 256 gånger med random rolls
     function testFuzz_AnyRollPaysCorrectly(uint256 roll) public {
         huntWithRoll(roll);
         (, uint256 expected) = game.result(roll % 10_000);
