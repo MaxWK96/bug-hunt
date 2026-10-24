@@ -1,74 +1,82 @@
 "use client";
 
-import Link from "next/link";
+import Image from "next/image";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Address } from "@scaffold-ui/components";
-import type { NextPage } from "next";
+import { formatEther } from "viem";
 import { useAccount } from "wagmi";
-import { BugAntIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { useTargetNetwork } from "~~/hooks/scaffold-eth";
+import { Faucet } from "~~/components/bug/Faucet";
+import { Game } from "~~/components/bug/Game";
+import { useDeployedContractInfo, useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
-const Home: NextPage = () => {
-  const { address: connectedAddress } = useAccount();
-  const { targetNetwork } = useTargetNetwork();
+export default function Home() {
+  const { address } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const { data: token } = useDeployedContractInfo({ contractName: "BugToken" });
+  const { data: totalSupply } = useScaffoldReadContract({ contractName: "BugToken", functionName: "totalSupply" });
 
   return (
-    <>
-      <div className="flex items-center flex-col grow pt-10">
-        <div className="px-5">
-          <h1 className="text-center">
-            <span className="block text-2xl mb-2">Welcome to</span>
-            <span className="block text-4xl font-bold">Scaffold-ETH 2</span>
-          </h1>
-          <div className="flex justify-center items-center space-x-2 flex-col">
-            <p className="my-2 font-medium">Connected Address:</p>
-            <Address address={connectedAddress} chain={targetNetwork} />
-          </div>
-
-          <p className="text-center text-lg">
-            Get started by editing{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/nextjs/app/page.tsx
-            </code>
-          </p>
-          <p className="text-center text-lg">
-            Edit your smart contract{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              YourContract.sol
-            </code>{" "}
-            in{" "}
-            <code className="italic bg-base-300 text-base font-bold max-w-full break-words break-all inline-block">
-              packages/hardhat/contracts
-            </code>
-          </p>
-        </div>
-
-        <div className="grow bg-base-300 w-full mt-16 px-8 py-12">
-          <div className="flex justify-center items-center gap-12 flex-col md:flex-row">
-            <div className="flex flex-col bg-base-100 border border-base-300 px-10 py-10 text-center items-center max-w-xs">
-              <BugAntIcon className="h-8 w-8" />
-              <p>
-                Tinker with your smart contract using the{" "}
-                <Link href="/debug" passHref className="link">
-                  Debug Contracts
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
-            <div className="flex flex-col bg-base-100 border border-base-300 px-10 py-10 text-center items-center max-w-xs">
-              <MagnifyingGlassIcon className="h-8 w-8" />
-              <p>
-                Explore your local transactions with the{" "}
-                <Link href="/blockexplorer" passHref className="link">
-                  Block Explorer
-                </Link>{" "}
-                tab.
-              </p>
-            </div>
+    <main className="max-w-4xl mx-auto px-4">
+      {/* Hero */}
+      <section className="flex flex-col md:flex-row items-center gap-8 py-12">
+        <Image src="/bug-mascot.png" alt="$BUG mascot" width={220} height={220} />
+        <div className="text-center md:text-left">
+          <h1 className="text-5xl font-bold">$BUG</h1>
+          <p className="text-xl">Bug Bounty Token</p>
+          <p className="mt-4">Auditors charge for finding bugs. We pay you. Spend 100 $BUG and see what you find.</p>
+          <div className="flex gap-3 mt-6 justify-center md:justify-start">
+            <a href="#game" className="btn btn-primary">
+              Start hunting
+            </a>
+            {!address && (
+              <button className="btn btn-outline" onClick={openConnectModal}>
+                Connect Wallet
+              </button>
+            )}
           </div>
         </div>
-      </div>
-    </>
+      </section>
+
+      {/* Token info */}
+      <section className="py-12">
+        <h2 className="text-3xl font-bold mb-4">Token info</h2>
+        <p>Total supply: {totalSupply !== undefined ? formatEther(totalSupply) : "…"} BUG (max 10,000,000)</p>
+        <p>Network: Ethereum Sepolia</p>
+        {token && (
+          <>
+            <Address address={token.address} />
+            <a className="link" href={`https://sepolia.etherscan.io/token/${token.address}`} target="_blank">
+              View on Etherscan
+            </a>
+          </>
+        )}
+        <h3 className="text-xl font-bold mt-6">Tokenomics</h3>
+        <ul className="list-disc ml-6">
+          <li>40% faucet (free for everyone)</li>
+          <li>20% bounty prize pool</li>
+          <li>10% owner</li>
+          <li>30% not minted yet</li>
+        </ul>
+      </section>
+
+      {/* Game */}
+      <section id="game" className="py-12 flex flex-col items-center gap-6">
+        <h2 className="text-3xl font-bold">Hunt for bugs</h2>
+        <Faucet />
+        <Game />
+      </section>
+
+      {/* Community */}
+      <section className="py-12">
+        <h2 className="text-3xl font-bold mb-4">About the meme</h2>
+        <p>Every smart contract has bugs. $BUG turns bug hunting into a game.</p>
+        <h3 className="text-xl font-bold mt-6">Roadmap</h3>
+        <ol className="list-decimal ml-6">
+          <li>Deploy on Sepolia ✅</li>
+          <li>Find 1,000 imaginary bugs</li>
+          <li>Moon 🌕</li>
+        </ol>
+      </section>
+    </main>
   );
-};
-
-export default Home;
+}
