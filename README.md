@@ -3,8 +3,7 @@
 Meme token and on-chain game about smart contract audits. Pay 100 BUG to hunt
 for a bug; Chainlink VRF decides what you find.
 
-Live site: https://DIN-URL.vercel.app
-First version (v1): https://github.com/MaxWK96/bug-bounty-hunter
+Live site: https://bug-hunt-black.vercel.app/
 
 ## Contracts (Sepolia)
 - BugToken: 0x... (link to Etherscan)
