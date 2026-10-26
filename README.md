@@ -6,8 +6,8 @@ for a bug; Chainlink VRF decides what you find.
 Live site: https://bug-hunt-black.vercel.app/
 
 ## Contracts (Sepolia)
-- BugToken: 0x... (link to Etherscan)
-- BugHunt: 0x... (link to Etherscan)
+- BugToken: https://sepolia.etherscan.io/address/0x4adb52B80e3786b72adba7bD19c18C47B26db4cA
+- BugHunt: https://sepolia.etherscan.io/address/0xF57E5eB09a82EA011e9AD4D879997A1aAbe9C7f9
 
 ## How to play
 1. Get Sepolia ETH: Google Cloud Web3 faucet, faucets.chain.link/sepolia or sepolia-faucet.pk910.de
