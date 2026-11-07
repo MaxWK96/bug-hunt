@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Address } from "@scaffold-ui/components";
 import { formatEther, parseEther } from "viem";
 import { useAccount } from "wagmi";
@@ -53,20 +53,18 @@ export const Game = () => {
 
   // Chainlink sends the result in its own transaction, so we watch isHunting:
   // when it goes from true to false, the result has arrived.
+  // Bug Squash stays open after that, so the round isn't cut off
   const [showResult, setShowResult] = useState(false);
+  const [squashOpen, setSquashOpen] = useState(false);
   const wasHunting = useRef(false);
   useEffect(() => {
-    if (wasHunting.current && isHunting === false) setShowResult(true);
+    if (wasHunting.current && isHunting === false) {
+      setShowResult(true);
+      setSquashOpen(true);
+    }
     wasHunting.current = isHunting === true;
   }, [isHunting]);
-
-  // Bug Squash score while waiting (off-chain, just for fun)
-  const [squashScore, setSquashScore] = useState(0);
-  const [bestSquash, setBestSquash] = useState(0);
-  const handleScore = useCallback((score: number) => {
-    setSquashScore(score);
-    setBestSquash(best => Math.max(best, score));
-  }, []);
+  const hasResult = showResult && !isHunting && severity !== undefined && bounty !== undefined;
 
   const approve = async () => {
     if (!game) return;
@@ -79,7 +77,6 @@ export const Game = () => {
 
   const hunt = async () => {
     setShowResult(false);
-    setSquashScore(0);
     try {
       await writeGame({ functionName: "hunt" });
     } catch (e) {
@@ -100,21 +97,22 @@ export const Game = () => {
       <p className="text-sm mt-1">Prize pool: {pool !== undefined ? formatEther(pool) : "…"} BUG</p>
 
       {/* Waiting or result */}
-      {isHunting && (
-        <div className="my-6">
-          <p className="mb-2">Chainlink is deciding your bounty (1–3 min). Squash bugs while you wait!</p>
-          <BugSquash onScore={handleScore} />
-        </div>
-      )}
-      {showResult && !isHunting && severity !== undefined && bounty !== undefined && (
+      {hasResult && (
         <div className="my-6">
           <p className="text-3xl font-bold">{RESULTS[severity]}</p>
           <p className="text-xl">+{formatEther(bounty)} BUG</p>
-          {squashScore > 0 && (
-            <p className="text-sm mt-2">
-              Bug Squash: {squashScore} points (best: {bestSquash})
-            </p>
+        </div>
+      )}
+      {(isHunting || squashOpen) && (
+        <div className="my-6">
+          {isHunting && (
+            <p className="mb-2">Chainlink is deciding your bounty (1–3 min). Squash bugs while you wait!</p>
           )}
+          <BugSquash
+            banner={hasResult ? `${RESULTS[severity]} +${formatEther(bounty)} BUG` : undefined}
+            bigWin={hasResult && severity >= 4}
+            onClose={isHunting ? undefined : () => setSquashOpen(false)}
+          />
         </div>
       )}
 

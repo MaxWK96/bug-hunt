@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { parseEther } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, useWatchAsset } from "wagmi";
 import { useDeployedContractInfo, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 export const Faucet = () => {
@@ -28,6 +28,7 @@ export const Faucet = () => {
     args: [token?.address],
   });
   const { writeContractAsync, isMining } = useScaffoldWriteContract({ contractName: "BugToken" });
+  const { watchAsset } = useWatchAsset();
 
   const faucetEmpty = faucetLeft !== undefined && faucetLeft < parseEther("500");
   const secondsLeft = nextClaim ? Math.max(0, Number(nextClaim) - now) : 0;
@@ -57,6 +58,24 @@ export const Faucet = () => {
             ? `Next claim in ${hours}h ${minutes}m ${seconds}s`
             : "Claim 500 BUG"}
       </button>
+      {token && (
+        <button
+          className="btn btn-ghost btn-sm mt-2"
+          onClick={() =>
+            watchAsset({
+              type: "ERC20",
+              options: {
+                address: token.address,
+                symbol: "BUG",
+                decimals: 18,
+                image: `${window.location.origin}/bug-mascot.png`,
+              },
+            })
+          }
+        >
+          🦊 Add $BUG to MetaMask
+        </button>
+      )}
     </div>
   );
 };
