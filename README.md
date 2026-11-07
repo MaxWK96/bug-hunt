@@ -40,7 +40,22 @@ OpenZeppelin ERC20 + Burnable + Capped + Ownable. Max 10M.
 Node 20+, Yarn, Foundry (WSL on Windows).
     yarn install
     yarn start
+The frontend reads the Sepolia contracts in `packages/nextjs/contracts/deployedContracts.ts`,
+so no deploy is needed to run it. Optional: copy `packages/nextjs/.env.example` to `.env.local`
+and add your own Alchemy and WalletConnect keys.
+
 Tests:
     cd packages/foundry && forge test
+
+## Deploy your own
+1. Create a VRF subscription at vrf.chain.link (Sepolia) and fund it with Sepolia ETH.
+2. Put your subscription id and wallet in `packages/foundry/script/DeployBug.s.sol`.
+3. Copy `packages/foundry/.env.example` to `.env` and add your Alchemy and Etherscan API keys.
+4. Create or import a deployer keystore: `yarn generate` or `yarn account:import`.
+5. Deploy, verify and push the ABIs to the frontend:
+       yarn deploy --network sepolia
+       yarn verify --network sepolia
+6. Add the new BugHunt address as a consumer on your VRF subscription.
+7. Deploy the frontend: `yarn vercel` (or connect the repo in Vercel, root `packages/nextjs`).
 
 Built with Scaffold-ETH 2.

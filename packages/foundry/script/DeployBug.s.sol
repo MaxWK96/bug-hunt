@@ -2,8 +2,8 @@
 pragma solidity ^0.8.24;
 
 import "./DeployHelpers.s.sol";
-import {BugToken} from "../contracts/BugToken.sol";
-import {BugHunt} from "../contracts/BugHunt.sol";
+import { BugToken } from "../contracts/BugToken.sol";
+import { BugHunt } from "../contracts/BugHunt.sol";
 
 contract DeployBug is ScaffoldETHDeploy {
     // Chainlink VRF på Sepolia (docs.chain.link -> VRF -> Supported Networks)

@@ -3,6 +3,7 @@ pragma solidity ^0.8.19;
 
 import "./DeployHelpers.s.sol";
 import { DeployBug } from "./DeployBug.s.sol";
+
 /**
  * @notice Main deployment script for all contracts
  * @dev Run this when you want to deploy multiple contracts at once
@@ -11,7 +12,7 @@ import { DeployBug } from "./DeployBug.s.sol";
  */
 contract DeployScript is ScaffoldETHDeploy {
     function run() external {
-       DeployBug deployBug = new DeployBug();
-deployBug.run();
+        DeployBug deployBug = new DeployBug();
+        deployBug.run();
     }
 }
