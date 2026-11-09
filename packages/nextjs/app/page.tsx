@@ -75,7 +75,7 @@ export default function Home() {
         <h3 className="text-xl font-bold mt-6">Roadmap</h3>
         <ol className="list-decimal ml-6">
           <li>Deploy on Sepolia ✅</li>
-          <li>Find 1,000 imaginary bugs</li>
+          <li>Find 1,000 bugs</li>
           <li>Moon 🌕</li>
         </ol>
       </section>
