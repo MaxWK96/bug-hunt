@@ -23,7 +23,9 @@ export default function Home() {
         <div className="text-center md:text-left">
           <h1 className="text-5xl font-bold">$BUG</h1>
           <p className="text-xl">Bug Bounty Token</p>
-          <p className="mt-4">Auditors charge for finding bugs. We pay you. Spend 100 $BUG and see what you find.</p>
+          <p className="mt-4">
+            Want to know if you can be a smart contract auditor? Spend 100 $BUG and see what you find yourself.
+          </p>
           <div className="flex gap-3 mt-6 justify-center md:justify-start">
             <a href="#game" className="btn btn-primary">
               Start hunting
@@ -69,7 +71,7 @@ export default function Home() {
       {/* Community */}
       <section className="py-12">
         <h2 className="text-3xl font-bold mb-4">About the meme</h2>
-        <p>Every smart contract has bugs. $BUG turns bug hunting into a game.</p>
+        <p>Gamble until you have atleast 100000 $BUG. Put it on your CV. Get any job. </p>
         <h3 className="text-xl font-bold mt-6">Roadmap</h3>
         <ol className="list-decimal ml-6">
           <li>Deploy on Sepolia ✅</li>
